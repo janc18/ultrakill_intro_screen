@@ -10,7 +10,7 @@ typedef struct stringData {
   int currentIndex;
 } stringData;
 
-int calculateRenderTextTime(const char *text, int currentFPS, int currentFrameCounter, int *currentStringIndex, int *lastIndex) {
+int getRemainingChars(const char *text, int currentFPS, int currentFrameCounter, int *currentStringIndex, int *lastIndex) {
   int sizeString = strnlen(text, MAXSIZESTRING);
   float aproximateTime = (sizeString * (1.0 / currentFPS)) * 10.0;
   *currentStringIndex = currentFrameCounter / 10;
@@ -42,12 +42,11 @@ int main(void) {
     if (IsKeyPressed(KEY_ENTER))
       framesCounter = 0;
     BeginDrawing();
-
     ClearBackground(BLACK);
 
     if (lastindex != 0 && (numberOfStringDrawed < (sizeof(array_strings) / sizeof(array_strings[0])))) {
       DrawText(TextSubtext(array_strings[numberOfStringDrawed], 0, framesCounter / 10), 210, ypos, 20, WHITE);
-      if (calculateRenderTextTime(array_strings[numberOfStringDrawed], GetFPS(), framesCounter, &currentIndex, &lastindex) == 0) {
+      if (getRemainingChars(array_strings[numberOfStringDrawed], GetFPS(), framesCounter, &currentIndex, &lastindex) == 0) {
         numberOfStringDrawed++;
         lastindex = -1;
         framesCounter = 0;
