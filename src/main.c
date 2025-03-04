@@ -1,9 +1,7 @@
-
 #include <stdio.h>
 #include <string.h>
-
+#include "drawingText.h"
 #include "raylib.h"
-int MAXSIZESTRING = 200;
 
 typedef struct stringData
 {
@@ -12,14 +10,6 @@ typedef struct stringData
     int         currentIndex;
 } stringData;
 
-int getRemainingChars(const char* text, int currentFPS, int currentFrameCounter, int* currentStringIndex, int* lastIndex)
-{
-    int   sizeString     = strnlen(text, MAXSIZESTRING);
-    float aproximateTime = (sizeString * (1.0 / currentFPS)) * 10.0;
-    *currentStringIndex  = currentFrameCounter / 10;
-    *lastIndex           = sizeString - *currentStringIndex;
-    return *lastIndex;
-}
 
 int main(void)
 {
