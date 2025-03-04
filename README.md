@@ -23,7 +23,9 @@ Clone the repository and compile the source code. For example, using GCC:
 
 ```bash
 cd src
-gcc -o ultrakill_screen main.c -lraylib
-./ultrakill_screen
-
+mkdir build
+cd build
+cmake ..
+make
+./Ultrakill
 ```
