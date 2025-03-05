@@ -26,6 +26,20 @@ int main(void)
     data.xPos                      = 210;
     data.yPos                      = 160;
     data.yPosStart                 = 160;
+    data.currentIndex              = -1;
+    data.color                     = WHITE;
+    data.sizeText                  = 20;
+
+    stringData_t details_array    = {0};
+    details_array.strings         = details;
+    details_array.numberOfStrings = 3;
+    details_array.lastindex       = -1;
+    details_array.xPos            = 210;
+    details_array.yPos            = 340;
+    details_array.yPosStart       = 340;
+    details_array.currentIndex    = -1;
+    details_array.color           = RED;
+    details_array.sizeText        = 20;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -38,7 +52,15 @@ int main(void)
             framesCounter = 0;
         BeginDrawing();
         ClearBackground(BLACK);
-        drawSecuenceOfStrings(&data, WHITE, 20);
+        if (drawSecuenceOfStrings(&data, WHITE, 20) == 0)
+        {
+            drawAllStrings(&data);
+            if (drawSecuenceOfStrings(&details_array, RED, 20) == 0)
+            {
+                drawAllStrings(&data);
+                drawAllStrings(&details_array);
+            }
+        }
         EndDrawing();
     }
 

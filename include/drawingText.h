@@ -12,12 +12,13 @@ typedef struct stringData_t {
   int xPos;
   int yPos;
   int yPosStart;
+  int sizeText;
+  Color color;
   int numberOfStringDrawed;
 } stringData_t;
 
 int getRemainingChars(const char *text, int currentFPS, int currentFrameCounter,
                       int *currentStringIndex, int *lastIndex);
-
+int drawAllStrings(stringData_t *stringData);
 int drawSecuenceOfStrings(stringData_t *stringData, Color color, int sizeText);
-
 #endif

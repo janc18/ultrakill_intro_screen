@@ -47,7 +47,18 @@ int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
     for (int i = 0; i < stringData->numberOfStringDrawed; i++)
     {
         DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * sizeText), sizeText, color);
+        if (stringData->numberOfStringDrawed == stringData->numberOfStrings)
+            return 0;
     }
+    return -1;
+}
 
+int drawAllStrings(stringData_t* stringData)
+{
+    for (int i = 0; i < stringData->numberOfStrings; i++)
+    {
+        DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * stringData->sizeText), stringData->sizeText,
+                 stringData->color);
+    }
     return 0;
 }
