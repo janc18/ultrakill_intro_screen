@@ -1,15 +1,5 @@
-#include <stdio.h>
-#include <string.h>
 #include "drawingText.h"
 #include "raylib.h"
-
-typedef struct stringData
-{
-    const char* string;
-    size_t      sizeString;
-    int         currentIndex;
-} stringData;
-
 
 int main(void)
 {
@@ -29,11 +19,13 @@ int main(void)
     const char* details[]     = {mankind, blood, hell};
 
     const char** arrayOfStrings[2] = {information, details};
-
-    int currentIndex;
-    int lastindex            = -1;
-    int numberOfStringDrawed = 0;
-    int ypos                 = 160;
+    stringData_t data              = {0};
+    data.strings                   = information;
+    data.numberOfStrings           = 4;
+    data.lastindex                 = -1;
+    data.xPos                      = 210;
+    data.yPos                      = 160;
+    data.yPosStart                 = 160;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -46,22 +38,7 @@ int main(void)
             framesCounter = 0;
         BeginDrawing();
         ClearBackground(BLACK);
-
-        if (lastindex != 0 && (numberOfStringDrawed < (sizeof(information) / sizeof(information[0]))))
-        {
-            DrawText(TextSubtext(information[numberOfStringDrawed], 0, framesCounter / 10), 210, ypos, 20, WHITE);
-            if (getRemainingChars(information[numberOfStringDrawed], GetFPS(), framesCounter, &currentIndex, &lastindex) == 0)
-            {
-                numberOfStringDrawed++;
-                lastindex     = -1;
-                framesCounter = 0;
-                ypos += 20;
-            }
-        }
-        for (int i = 0; i < numberOfStringDrawed; i++)
-        {
-            DrawText(information[i], 210, 160 + (i * 20), 20, WHITE);
-        }
+        drawSecuenceOfStrings(&data, WHITE, 20);
         EndDrawing();
     }
 
