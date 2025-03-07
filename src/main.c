@@ -3,8 +3,8 @@
 
 int main(void)
 {
-    const int screenWidth  = 800;
-    const int screenHeight = 450;
+    const int screenWidth  = 1280;
+    const int screenHeight = 720;
     InitWindow(screenWidth, screenHeight, "V1");
     int framesCounter = 0;
 
@@ -18,17 +18,16 @@ int main(void)
     const char  hell[]        = "HELL IS FULL.";
     const char* details[]     = {mankind, blood, hell};
 
-    const char** arrayOfStrings[2] = {information, details};
-    stringData_t data              = {0};
-    data.strings                   = information;
-    data.numberOfStrings           = 4;
-    data.lastindex                 = -1;
-    data.xPos                      = 210;
-    data.yPos                      = 160;
-    data.yPosStart                 = 160;
-    data.currentIndex              = -1;
-    data.color                     = WHITE;
-    data.sizeText                  = 20;
+    stringData_t data    = {0};
+    data.strings         = information;
+    data.numberOfStrings = 4;
+    data.lastindex       = -1;
+    data.xPos            = 210;
+    data.yPos            = 160;
+    data.yPosStart       = 160;
+    data.currentIndex    = -1;
+    data.color           = WHITE;
+    data.sizeText        = 40;
 
     stringData_t details_array    = {0};
     details_array.strings         = details;
@@ -39,7 +38,10 @@ int main(void)
     details_array.yPosStart       = 340;
     details_array.currentIndex    = -1;
     details_array.color           = RED;
-    details_array.sizeText        = 20;
+    details_array.sizeText        = 40;
+
+    stringData_t arrayOfStrings[2] = {data, details_array};
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -52,10 +54,10 @@ int main(void)
             framesCounter = 0;
         BeginDrawing();
         ClearBackground(BLACK);
-        if (drawSecuenceOfStrings(&data, WHITE, 20) == 0)
+        if (drawSecuenceOfStrings(&data, WHITE, 40) == 0)
         {
             drawAllStrings(&data);
-            if (drawSecuenceOfStrings(&details_array, RED, 20) == 0)
+            if (drawSecuenceOfStrings(&details_array, RED, 40) == 0)
             {
                 drawAllStrings(&data);
                 drawAllStrings(&details_array);

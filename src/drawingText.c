@@ -29,7 +29,7 @@ int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
 {
     if (stringData->lastindex != 0 && (stringData->numberOfStringDrawed < stringData->numberOfStrings))
     {
-        stringData->framesCounter++;
+        stringData->framesCounter+=2;
         DrawText(TextSubtext(stringData->strings[stringData->numberOfStringDrawed], 0, stringData->framesCounter / 10), stringData->xPos,
                  stringData->yPos, sizeText, color);
 
