@@ -42,16 +42,13 @@ int main(void)
 
     stringData_t arrayOfStrings[2] = {data, details_array};
 
+    InitAudioDevice();
+    Sound fxOgg         = LoadSound("../../resources/audio/terminalSound.ogg"); 
+    details_array.sound = fxOgg;
+    data.sound          = fxOgg;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
-        if (IsKeyDown(KEY_SPACE))
-            framesCounter += 8;
-        else
-            framesCounter++;
-
-        if (IsKeyPressed(KEY_ENTER))
-            framesCounter = 0;
         BeginDrawing();
         ClearBackground(BLACK);
         if (drawSecuenceOfStrings(&data, WHITE, 40) == 0)
@@ -65,7 +62,8 @@ int main(void)
         }
         EndDrawing();
     }
-
+    UnloadSound(fxOgg);
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;

@@ -10,12 +10,12 @@ int getRemainingChars(const char* text, int currentFPS, int currentFrameCounter,
     int sizeString      = strnlen(text, MAXSIZESTRING);
     *currentStringIndex = currentFrameCounter / 10;
     *lastIndex          = sizeString - *currentStringIndex;
-    printf("Current string :%s, lastindex:%d, framesCounter:%d\n", text, *lastIndex, currentFrameCounter);
     return *lastIndex;
 }
 
 void printStringData(stringData_t* stringData)
 {
+    printf("=====\n");
     printf("numberOfStrings: %zu\n", stringData->numberOfStrings);
     printf("lastIndex: %d\n", stringData->lastindex);
     printf("numberOfStringDrawed: %d\n", stringData->numberOfStringDrawed);
@@ -23,27 +23,31 @@ void printStringData(stringData_t* stringData)
     printf("yPos :%d\n", stringData->yPos);
     printf("framesCounter :%d\n", stringData->framesCounter);
     printf("currentIndex :%d\n", stringData->currentIndex);
+    printf("=====\n");
 }
 
 int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
 {
     if (stringData->lastindex != 0 && (stringData->numberOfStringDrawed < stringData->numberOfStrings))
     {
-        stringData->framesCounter+=2;
+        stringData->framesCounter += 2;
         DrawText(TextSubtext(stringData->strings[stringData->numberOfStringDrawed], 0, stringData->framesCounter / 10), stringData->xPos,
                  stringData->yPos, sizeText, color);
-
-        if (getRemainingChars(stringData->strings[stringData->numberOfStringDrawed], GetFPS(), stringData->framesCounter, &stringData->currentIndex,
-                              &stringData->lastindex) == 0)
+        int getRemainingCharsValue = getRemainingChars(stringData->strings[stringData->numberOfStringDrawed], GetFPS(), stringData->framesCounter,
+                                                       &stringData->currentIndex, &stringData->lastindex);
+        if (getRemainingCharsValue == 0)
         {
             stringData->numberOfStringDrawed++;
             stringData->lastindex     = -1;
             stringData->framesCounter = 0;
             stringData->yPos += sizeText;
         }
+        bool isSpace = checkIfCharacterIs(stringData->strings[stringData->numberOfStringDrawed], ' ', stringData->currentIndex);
+        if (stringData->framesCounter % 10 == 0 && !isSpace)
+        {
+            PlaySound(stringData->sound);
+        }
     }
-    printStringData(stringData);
-
     for (int i = 0; i < stringData->numberOfStringDrawed; i++)
     {
         DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * sizeText), sizeText, color);
@@ -61,4 +65,21 @@ int drawAllStrings(stringData_t* stringData)
                  stringData->color);
     }
     return 0;
+}
+
+bool checkIfCharacterIs(const char* string, char character, int indexString)
+{
+    if (string != NULL)
+    {
+
+        if (string[indexString] == character)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+  return false;
 }
