@@ -7,5 +7,5 @@ include_directories(/usr/local/include)
 include_directories(../include)
 link_directories(/usr/local/lib)
 
-add_executable(${PROJECT_NAME} ../src/main.c ../src/drawingText.c)
+add_executable(${PROJECT_NAME} ../src/main.c ../src/drawingText.c ../src/manageAudio.c)
 target_link_libraries(${PROJECT_NAME} raylib )
