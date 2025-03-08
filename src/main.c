@@ -13,7 +13,7 @@ int main(void)
     const char* location      = TextFormat("%-29s APPROCHING HELL", "LOCATION:");
     const char* objetive      = TextFormat("%-23s FIND A WEAPON", "CURRENT OBJECTIVE:");
     const char* information[] = {status, machineId, location, objetive};
-    const char  mankind[]     = "MAKIND IS DEAD.";
+    const char  mankind[]     = "MANKIND IS DEAD.";
     const char  blood[]       = "BLOOD IS FUEL.";
     const char  hell[]        = "HELL IS FULL.";
     const char* details[]     = {mankind, blood, hell};
