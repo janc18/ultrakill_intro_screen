@@ -1,5 +1,6 @@
 
 #include "drawingText.h"
+#include <ctype.h>
 #include <raylib.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,11 +31,12 @@ int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
 {
     if (stringData->lastindex != 0 && (stringData->numberOfStringDrawed < stringData->numberOfStrings))
     {
-        stringData->framesCounter += 2;
+        stringData->framesCounter += 3;
         DrawText(TextSubtext(stringData->strings[stringData->numberOfStringDrawed], 0, stringData->framesCounter / 10), stringData->xPos,
                  stringData->yPos, sizeText, color);
-        int getRemainingCharsValue = getRemainingChars(stringData->strings[stringData->numberOfStringDrawed], GetFPS(), stringData->framesCounter,
-                                                       &stringData->currentIndex, &stringData->lastindex);
+        int  getRemainingCharsValue = getRemainingChars(stringData->strings[stringData->numberOfStringDrawed], GetFPS(), stringData->framesCounter,
+                                                        &stringData->currentIndex, &stringData->lastindex);
+        bool isSpace                = checkIfCharacterIs(stringData->strings[stringData->numberOfStringDrawed], ' ', stringData->currentIndex);
         if (getRemainingCharsValue == 0)
         {
             stringData->numberOfStringDrawed++;
@@ -42,7 +44,7 @@ int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
             stringData->framesCounter = 0;
             stringData->yPos += sizeText;
         }
-        bool isSpace = checkIfCharacterIs(stringData->strings[stringData->numberOfStringDrawed], ' ', stringData->currentIndex);
+
         if (stringData->framesCounter % 10 == 0 && !isSpace)
         {
             PlaySound(stringData->sound);
@@ -82,4 +84,20 @@ bool checkIfCharacterIs(const char* string, char character, int indexString)
         }
     }
   return false;
+}
+
+int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, int sizeText)
+{
+    if (stringData == NULL)
+    {
+        return -1;
+    }
+    stringData->lastindex    = -1;
+    stringData->xPos         = xPos;
+    stringData->yPos         = yPos;
+    stringData->yPosStart    = yPos;
+    stringData->currentIndex = -1;
+    stringData->color        = color;
+    stringData->sizeText     = sizeText;
+    return 0;
 }

@@ -23,4 +23,5 @@ int getRemainingChars(const char *text, int currentFPS, int currentFrameCounter,
 int drawAllStrings(stringData_t *stringData);
 int drawSecuenceOfStrings(stringData_t *stringData, Color color, int sizeText);
 bool checkIfCharacterIs(const char *string,char character,int indexString);
+int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, int sizeText);
 #endif

@@ -1,5 +1,8 @@
 #include "drawingText.h"
+#include "manageAudio.h"
 #include "raylib.h"
+#include <stdlib.h>
+#include <time.h>
 
 int main(void)
 {
@@ -21,31 +24,23 @@ int main(void)
     stringData_t data    = {0};
     data.strings         = information;
     data.numberOfStrings = 4;
-    data.lastindex       = -1;
-    data.xPos            = 210;
-    data.yPos            = 160;
-    data.yPosStart       = 160;
-    data.currentIndex    = -1;
-    data.color           = WHITE;
-    data.sizeText        = 40;
-
+    configStringData(&data, 210, 160, WHITE, 40);
     stringData_t details_array    = {0};
     details_array.strings         = details;
     details_array.numberOfStrings = 3;
-    details_array.lastindex       = -1;
-    details_array.xPos            = 210;
-    details_array.yPos            = 340;
-    details_array.yPosStart       = 340;
-    details_array.currentIndex    = -1;
-    details_array.color           = RED;
-    details_array.sizeText        = 40;
-
+    configStringData(&details_array, 210, 340, RED, 40);
     stringData_t arrayOfStrings[2] = {data, details_array};
 
     InitAudioDevice();
-    Sound fxOgg         = LoadSound("../../resources/audio/terminalSound.ogg"); 
-    details_array.sound = fxOgg;
-    data.sound          = fxOgg;
+
+    srand(time(NULL));
+    int   SIZE = 470;
+    short buffer[SIZE];
+    GenerateKeyClickSound(buffer, SIZE, 100.0f, SIZE);
+    Wave  wave          = {.frameCount = SIZE + 200, .sampleRate = SIZE + 600, .sampleSize = 16, .channels = 1, .data = buffer};
+    Sound keySound      = LoadSoundFromWave(wave);
+    details_array.sound = keySound;
+    data.sound          = keySound;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -62,7 +57,7 @@ int main(void)
         }
         EndDrawing();
     }
-    UnloadSound(fxOgg);
+    UnloadSound(keySound);
     CloseAudioDevice();
     CloseWindow();
 
