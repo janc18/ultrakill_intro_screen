@@ -1,12 +1,10 @@
-
 #include "drawingText.h"
-#include <ctype.h>
 #include <raylib.h>
 #include <stdio.h>
 #include <string.h>
 int MAXSIZESTRING = 200;
 
-int getRemainingChars(const char* text, int currentFPS, int currentFrameCounter, int* currentStringIndex, int* lastIndex)
+int getRemainingChars(const char* text, int currentFrameCounter, int* currentStringIndex, int* lastIndex)
 {
     int sizeString      = strnlen(text, MAXSIZESTRING);
     *currentStringIndex = currentFrameCounter / 10;
@@ -27,22 +25,19 @@ void printStringData(stringData_t* stringData)
     printf("=====\n");
 }
 
-int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
+int drawSecuenceOfStrings(stringData_t* stringData)
 {
     if (stringData->lastindex != 0 && (stringData->numberOfStringDrawed < stringData->numberOfStrings))
     {
+        const char* stringToDraw = stringData->strings[stringData->numberOfStringDrawed];
         stringData->framesCounter += 3;
-        DrawText(TextSubtext(stringData->strings[stringData->numberOfStringDrawed], 0, stringData->framesCounter / 10), stringData->xPos,
-                 stringData->yPos, sizeText, color);
-        int  getRemainingCharsValue = getRemainingChars(stringData->strings[stringData->numberOfStringDrawed], GetFPS(), stringData->framesCounter,
-                                                        &stringData->currentIndex, &stringData->lastindex);
-        bool isSpace                = checkIfCharacterIs(stringData->strings[stringData->numberOfStringDrawed], ' ', stringData->currentIndex);
+        DrawText(TextSubtext(stringToDraw, 0, stringData->framesCounter / 10), stringData->xPos, stringData->yPos, stringData->sizeText,
+                 stringData->color);
+        int  getRemainingCharsValue = getRemainingChars(stringToDraw, stringData->framesCounter, &stringData->currentIndex, &stringData->lastindex);
+        bool isSpace                = checkIfCharacterIs(stringToDraw, ' ', stringData->currentIndex);
         if (getRemainingCharsValue == 0)
         {
-            stringData->numberOfStringDrawed++;
-            stringData->lastindex     = -1;
-            stringData->framesCounter = 0;
-            stringData->yPos += sizeText;
+            modifyValuesToDrawTheNextString(stringData);
         }
 
         if (stringData->framesCounter % 10 == 0 && !isSpace)
@@ -50,13 +45,30 @@ int drawSecuenceOfStrings(stringData_t* stringData, Color color, int sizeText)
             PlaySound(stringData->sound);
         }
     }
+    int drawedAllStrings = drawStringsThatHadBeenDrawed(stringData);
+    return drawedAllStrings;
+}
+
+int drawStringsThatHadBeenDrawed(stringData_t* stringData)
+{
+
     for (int i = 0; i < stringData->numberOfStringDrawed; i++)
     {
-        DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * sizeText), sizeText, color);
+        DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * stringData->sizeText), stringData->sizeText,
+                 stringData->color);
         if (stringData->numberOfStringDrawed == stringData->numberOfStrings)
             return 0;
     }
     return -1;
+}
+
+int modifyValuesToDrawTheNextString(stringData_t* stringData)
+{
+    stringData->numberOfStringDrawed++;
+    stringData->lastindex     = -1;
+    stringData->framesCounter = 0;
+    stringData->yPos += stringData->sizeText;
+    return 0;
 }
 
 int drawAllStrings(stringData_t* stringData)
@@ -83,7 +95,7 @@ bool checkIfCharacterIs(const char* string, char character, int indexString)
             return false;
         }
     }
-  return false;
+    return false;
 }
 
 int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, int sizeText)
@@ -99,5 +111,14 @@ int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, 
     stringData->currentIndex = -1;
     stringData->color        = color;
     stringData->sizeText     = sizeText;
+    return 0;
+}
+
+int generateStringData(int numberOfStringsToDraw, const char** stringsToDraw, stringData_t* stringData, int xPos, int yPos, Color color, int sizeText)
+{
+
+    stringData->strings         = stringsToDraw;
+    stringData->numberOfStrings = numberOfStringsToDraw;
+    configStringData(stringData, xPos, yPos, color, sizeText);
     return 0;
 }

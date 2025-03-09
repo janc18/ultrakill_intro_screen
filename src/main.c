@@ -21,14 +21,10 @@ int main(void)
     const char  hell[]        = "HELL IS FULL.";
     const char* details[]     = {mankind, blood, hell};
 
-    stringData_t data    = {0};
-    data.strings         = information;
-    data.numberOfStrings = 4;
-    configStringData(&data, 210, 160, WHITE, 40);
+    stringData_t data = {0};
+    generateStringData(4, information, &data, 210, 160, WHITE, 40);
     stringData_t details_array    = {0};
-    details_array.strings         = details;
-    details_array.numberOfStrings = 3;
-    configStringData(&details_array, 210, 340, RED, 40);
+    generateStringData(3, details, &details_array, 210, 340, RED, 40);
     stringData_t arrayOfStrings[2] = {data, details_array};
 
     InitAudioDevice();
@@ -46,10 +42,10 @@ int main(void)
     {
         BeginDrawing();
         ClearBackground(BLACK);
-        if (drawSecuenceOfStrings(&data, WHITE, 40) == 0)
+        if (drawSecuenceOfStrings(&data) == 0)
         {
             drawAllStrings(&data);
-            if (drawSecuenceOfStrings(&details_array, RED, 40) == 0)
+            if (drawSecuenceOfStrings(&details_array) == 0)
             {
                 drawAllStrings(&data);
                 drawAllStrings(&details_array);

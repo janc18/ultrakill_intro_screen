@@ -18,10 +18,16 @@ typedef struct stringData_t {
   Sound sound;
 } stringData_t;
 
-int getRemainingChars(const char *text, int currentFPS, int currentFrameCounter,
+int getRemainingChars(const char *text, int currentFrameCounter,
                       int *currentStringIndex, int *lastIndex);
 int drawAllStrings(stringData_t *stringData);
-int drawSecuenceOfStrings(stringData_t *stringData, Color color, int sizeText);
-bool checkIfCharacterIs(const char *string,char character,int indexString);
-int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, int sizeText);
+int drawSecuenceOfStrings(stringData_t *stringData);
+bool checkIfCharacterIs(const char *string, char character, int indexString);
+int configStringData(stringData_t *stringData, int xPos, int yPos, Color color,
+                     int sizeText);
+int modifyValuesToDrawTheNextString(stringData_t *stringData);
+int drawStringsThatHadBeenDrawed(stringData_t *stringData);
+int generateStringData(int numberOfStringsToDraw, const char **stringsToDraw,
+                       stringData_t *stringData, int xPos, int yPos,
+                       Color color, int sizeText);
 #endif
