@@ -27,28 +27,54 @@ int main(void)
     stringData_t arrayOfStrings[2] = {data, details_array};
     InitAudioDevice();
     srand(time(NULL));
-    int   SIZE = 470;
-    short buffer[SIZE];
-    GenerateKeyClickSound(buffer, SIZE, 100.0f, SIZE);
-    Wave  wave          = {.frameCount = SIZE + 200, .sampleRate = SIZE + 600, .sampleSize = 16, .channels = 1, .data = buffer};
+
+    int   sampleRate = 44100;
+    int   samples    = sampleRate * 0.0186;
+    short buffer[samples];
+    GenerateKeyClickSound(buffer, samples, 100.0f, sampleRate);
+    Wave  wave          = {.frameCount = samples, .sampleRate = sampleRate, .sampleSize = 16, .channels = 1, .data = buffer};
     Sound keySound      = LoadSoundFromWave(wave);
-    details_array.sound = keySound;
     data.sound          = keySound;
+    details_array.sound = keySound;
+    Image image1        = LoadImage("../../resources/images/1.png");
+    Image image2        = LoadImage("../../resources/images/2.png");
+    ImageResize(&image1, image1.width / 2.5, image1.height / 2.5);
+    ImageResize(&image2, image2.width / 2.5, image2.height / 2.5);
+    Texture2D texture1       = LoadTextureFromImage(image1);
+    Texture2D texture2       = LoadTextureFromImage(image2);
+    double    lastSwitchTime = 0;
+    bool      showTexture1   = true;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+
+        if (GetTime() - lastSwitchTime >= 0.5)
+        {
+            showTexture1   = !showTexture1;
+            lastSwitchTime = GetTime();
+        }
         BeginDrawing();
         ClearBackground(BLACK);
+
         if (drawSecuenceOfStrings(&data) == 0)
         {
-            if (drawSecuenceOfStrings(&details_array) == 0)
-            {
-            }
+            drawSecuenceOfStrings(&details_array);
+        }
+
+        if (showTexture1)
+        {
+            DrawTexture(texture1, 1000, 500, WHITE);
+        }
+        else
+        {
+            DrawTexture(texture2, 1000, 500, WHITE);
         }
         EndDrawing();
     }
     freeTextureStrings(&data);
     freeTextureStrings(&details_array);
+    UnloadImage(image1);
+    UnloadImage(image2);
     UnloadSound(keySound);
     CloseAudioDevice();
     CloseWindow();

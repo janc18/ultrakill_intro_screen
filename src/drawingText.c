@@ -31,7 +31,7 @@ int drawSecuenceOfStrings(stringData_t* stringData)
     if (stringData->lastindex != 0 && (stringData->numberOfStringDrawed < stringData->numberOfStrings))
     {
         const char* stringToDraw = stringData->strings[stringData->numberOfStringDrawed];
-        stringData->framesCounter += 3;
+        stringData->framesCounter += 2;
         DrawText(TextSubtext(stringToDraw, 0, stringData->framesCounter / 10), stringData->xPos, stringData->yPos, stringData->sizeText,
                  stringData->color);
         int  getRemainingCharsValue = getRemainingChars(stringToDraw, stringData->framesCounter, &stringData->currentIndex, &stringData->lastindex);
