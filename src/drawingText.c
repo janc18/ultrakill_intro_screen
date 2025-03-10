@@ -1,6 +1,7 @@
 #include "drawingText.h"
 #include <raylib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 int MAXSIZESTRING = 200;
 
@@ -38,6 +39,7 @@ int drawSecuenceOfStrings(stringData_t* stringData)
         if (getRemainingCharsValue == 0)
         {
             modifyValuesToDrawTheNextString(stringData);
+            stringData->textureNeedsUpdate[stringData->numberOfStringDrawed - 1] = true;
         }
 
         if (stringData->framesCounter % 10 == 0 && !isSpace)
@@ -51,15 +53,21 @@ int drawSecuenceOfStrings(stringData_t* stringData)
 
 int drawStringsThatHadBeenDrawed(stringData_t* stringData)
 {
-
     for (int i = 0; i < stringData->numberOfStringDrawed; i++)
     {
-        DrawText(stringData->strings[i], stringData->xPos, stringData->yPosStart + (i * stringData->sizeText), stringData->sizeText,
-                 stringData->color);
-        if (stringData->numberOfStringDrawed == stringData->numberOfStrings)
-            return 0;
+        const char* stringToDraw = stringData->strings[i];
+        if (stringData->textureNeedsUpdate[i] == true)
+        {
+            stringData->StringTextures[i]     = createStringTexture(stringToDraw, stringData);
+            stringData->textureNeedsUpdate[i] = false;
+        }
+        int textWidth     = MeasureText(stringToDraw, stringData->sizeText);
+        int calculateYPos = stringData->yPosStart + (i * stringData->sizeText);
+        DrawTextureRec(stringData->StringTextures[i].texture, (Rectangle){0, 0, textWidth, -stringData->sizeText},
+                       (Vector2){stringData->xPos, calculateYPos}, stringData->color);
     }
-    return -1;
+
+    return (stringData->numberOfStringDrawed == stringData->numberOfStrings) ? 0 : -1;
 }
 
 int modifyValuesToDrawTheNextString(stringData_t* stringData)
@@ -104,13 +112,15 @@ int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, 
     {
         return -1;
     }
-    stringData->lastindex    = -1;
-    stringData->xPos         = xPos;
-    stringData->yPos         = yPos;
-    stringData->yPosStart    = yPos;
-    stringData->currentIndex = -1;
-    stringData->color        = color;
-    stringData->sizeText     = sizeText;
+    stringData->lastindex          = -1;
+    stringData->xPos               = xPos;
+    stringData->yPos               = yPos;
+    stringData->yPosStart          = yPos;
+    stringData->currentIndex       = -1;
+    stringData->color              = color;
+    stringData->sizeText           = sizeText;
+    stringData->StringTextures     = (RenderTexture2D*)calloc(stringData->numberOfStrings, sizeof(RenderTexture2D));
+    stringData->textureNeedsUpdate = (bool*)calloc(stringData->numberOfStrings, sizeof(bool));
     return 0;
 }
 
@@ -121,4 +131,25 @@ int generateStringData(int numberOfStringsToDraw, const char** stringsToDraw, st
     stringData->numberOfStrings = numberOfStringsToDraw;
     configStringData(stringData, xPos, yPos, color, sizeText);
     return 0;
+}
+
+RenderTexture2D createStringTexture(const char* string, stringData_t* stringData)
+{
+    stringData->lastTextWidth   = MeasureText(string, stringData->sizeText);
+    RenderTexture2D textTexture = LoadRenderTexture(stringData->lastTextWidth, stringData->sizeText);
+    BeginTextureMode(textTexture);
+    ClearBackground(BLANK);
+    DrawText(string, 0, 0, stringData->sizeText, stringData->color);
+    EndTextureMode();
+    return textTexture;
+}
+
+int freeTextureStrings(stringData_t* stringData)
+{
+    for (int i = 0; i < stringData->numberOfStrings; i++)
+    {
+        UnloadRenderTexture(stringData->StringTextures[i]);
+    }
+    free(stringData->StringTextures);
+    free(stringData->textureNeedsUpdate);
 }

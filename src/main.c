@@ -11,24 +11,21 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "V1");
     int framesCounter = 0;
 
-    const char* status        = TextFormat("STATUS UPDATE:");
-    const char* machineId     = TextFormat("%-29s V1", "MACHINE ID:");
-    const char* location      = TextFormat("%-29s APPROCHING HELL", "LOCATION:");
-    const char* objetive      = TextFormat("%-23s FIND A WEAPON", "CURRENT OBJECTIVE:");
-    const char* information[] = {status, machineId, location, objetive};
-    const char  mankind[]     = "MANKIND IS DEAD.";
-    const char  blood[]       = "BLOOD IS FUEL.";
-    const char  hell[]        = "HELL IS FULL.";
-    const char* details[]     = {mankind, blood, hell};
-
-    stringData_t data = {0};
+    const char*  status        = TextFormat("STATUS UPDATE:");
+    const char*  machineId     = TextFormat("%-29s V1", "MACHINE ID:");
+    const char*  location      = TextFormat("%-29s APPROCHING HELL", "LOCATION:");
+    const char*  objetive      = TextFormat("%-23s FIND A WEAPON", "CURRENT OBJECTIVE:");
+    const char*  information[] = {status, machineId, location, objetive};
+    const char   mankind[]     = "MANKIND IS DEAD.";
+    const char   blood[]       = "BLOOD IS FUEL.";
+    const char   hell[]        = "HELL IS FULL.";
+    const char*  details[]     = {mankind, blood, hell};
+    stringData_t data          = {0};
     generateStringData(4, information, &data, 210, 160, WHITE, 40);
-    stringData_t details_array    = {0};
+    stringData_t details_array = {0};
     generateStringData(3, details, &details_array, 210, 340, RED, 40);
     stringData_t arrayOfStrings[2] = {data, details_array};
-
     InitAudioDevice();
-
     srand(time(NULL));
     int   SIZE = 470;
     short buffer[SIZE];
@@ -44,15 +41,14 @@ int main(void)
         ClearBackground(BLACK);
         if (drawSecuenceOfStrings(&data) == 0)
         {
-            drawAllStrings(&data);
             if (drawSecuenceOfStrings(&details_array) == 0)
             {
-                drawAllStrings(&data);
-                drawAllStrings(&details_array);
             }
         }
         EndDrawing();
     }
+    freeTextureStrings(&data);
+    freeTextureStrings(&details_array);
     UnloadSound(keySound);
     CloseAudioDevice();
     CloseWindow();
