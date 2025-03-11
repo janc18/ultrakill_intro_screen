@@ -3,8 +3,7 @@
 #include <raylib.h>
 #include <stddef.h>
 
-typedef struct stringData_t
-{
+typedef struct stringData_t {
   const char **strings;
   RenderTexture2D *StringTextures;
   size_t numberOfStrings;
@@ -33,9 +32,8 @@ int modifyValuesToDrawTheNextString(stringData_t *stringData);
 int drawStringsThatHadBeenDrawed(stringData_t *stringData);
 int generateStringData(int numberOfStringsToDraw, const char **stringsToDraw,
                        stringData_t *stringData, int xPos, int yPos,
-                       Color color, int sizeText);
-
-RenderTexture2D createStringTexture(const char *string, stringData_t *stringData);
+                       Color color, int sizeText, Sound sound);
+RenderTexture2D createStringTexture(const char *string,
+                                    stringData_t *stringData);
 int freeTextureStrings(stringData_t *stringData);
-
 #endif

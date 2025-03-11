@@ -124,9 +124,10 @@ int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, 
     return 0;
 }
 
-int generateStringData(int numberOfStringsToDraw, const char** stringsToDraw, stringData_t* stringData, int xPos, int yPos, Color color, int sizeText)
+int generateStringData(int numberOfStringsToDraw, const char** stringsToDraw, stringData_t* stringData, int xPos, int yPos, Color color, int sizeText,
+                       Sound sound)
 {
-
+    stringData->sound           = sound;
     stringData->strings         = stringsToDraw;
     stringData->numberOfStrings = numberOfStringsToDraw;
     configStringData(stringData, xPos, yPos, color, sizeText);
