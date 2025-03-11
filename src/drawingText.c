@@ -152,4 +152,5 @@ int freeTextureStrings(stringData_t* stringData)
     }
     free(stringData->StringTextures);
     free(stringData->textureNeedsUpdate);
+    return 0;
 }
