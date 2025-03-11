@@ -20,22 +20,17 @@ int main(void)
     // Add each string to a string array
     const char* details[]     = {mankind, blood, hell};
     const char* information[] = {status, machineId, location, objetive};
-    // Create StringData_t structs and configure
-    stringData_t data = {0};
-    generateStringData(4, information, &data, 210, 160, WHITE, 40);
-    stringData_t details_array = {0};
-    generateStringData(3, details, &details_array, 210, 340, RED, 40);
     // Audio initiation and loading sound to each stringData
     InitAudioDevice();
     srand(time(NULL));
     int   sampleRate = 44100;
     int   samples    = sampleRate * 0.0186;
-    short buffer[samples];
-    GenerateKeyClickSound(buffer, samples, 100.0f, sampleRate);
-    Wave  wave          = {.frameCount = samples, .sampleRate = sampleRate, .sampleSize = 16, .channels = 1, .data = buffer};
-    Sound keySound      = LoadSoundFromWave(wave);
-    data.sound          = keySound;
-    details_array.sound = keySound;
+    Sound keySound   = generateSimpleSound(sampleRate, samples);
+    // Create StringData_t structs and configure
+    stringData_t data          = {0};
+    stringData_t details_array = {0};
+    generateStringData(4, information, &data, 210, 160, WHITE, 40, keySound);
+    generateStringData(3, details, &details_array, 210, 340, RED, 40, keySound);
     // Loading images to be drawing
     Image image1 = LoadImage("../../resources/images/1.png");
     Image image2 = LoadImage("../../resources/images/2.png");
