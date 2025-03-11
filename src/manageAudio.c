@@ -11,8 +11,8 @@ void GenerateKeyClickSound(short* buffer, int samples, float baseFrequency, int 
     for (int i = 0; i < samples; i++)
     {
         float t     = (float)i / sampleRate;
-        float value = (fmod(t * frequency, 1.0) < 0.5) ? 1.0f : -1.0f; 
-        float decay = 1.0f - (float)i / samples;                      
+        float value = (fmod(t * frequency, 1.0) < 0.5) ? 1.0f : -1.0f;
+        float decay = 1.0f - (float)i / samples;
         buffer[i]   = (short)(value * 32000 * decay);
     }
 }
@@ -45,4 +45,12 @@ void simpleSound(short* buffer, int samples, float frequency, int sampleRate)
         float t   = (float)i / sampleRate;
         buffer[i] = (short)(sinf(2.0f * PI * frequency * t) * 32000);
     }
+}
+Sound generateSimpleSound(int sampleRate,int samples)
+{
+    short buffer[samples];
+    GenerateKeyClickSound(buffer, samples, 100.0f, sampleRate);
+    Wave  wave     = {.frameCount = samples, .sampleRate = sampleRate, .sampleSize = 16, .channels = 1, .data = buffer};
+    Sound keySound = LoadSoundFromWave(wave);
+    return keySound;
 }
