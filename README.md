@@ -2,7 +2,7 @@
 
 This project is a simple program that generates a window and simulates the initial sequence of a new game, inspired by Ultrakill. It’s built using [Raylib](https://www.raylib.com/).
 
-![ultrakill_screen](./resources/output.mp4)
+![ultrakill_screen](./resources/output.gif)
 
 ## Features
 
