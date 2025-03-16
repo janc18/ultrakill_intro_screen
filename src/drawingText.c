@@ -1,5 +1,6 @@
 #include "drawingText.h"
 #include <raylib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +45,7 @@ int drawSecuenceOfStrings(stringData_t* stringData)
 
         if (stringData->framesCounter % 10 == 0 && !isSpace)
         {
+            stringData->isCharacter     = true;
             PlaySound(stringData->sound);
         }
     }
@@ -65,6 +67,8 @@ int drawStringsThatHadBeenDrawed(stringData_t* stringData)
         int calculateYPos = stringData->yPosStart + (i * stringData->sizeText);
         DrawTextureRec(stringData->StringTextures[i].texture, (Rectangle){0, 0, textWidth, -stringData->sizeText},
                        (Vector2){stringData->xPos, calculateYPos}, stringData->color);
+        stringData->texturePosition[i].x = stringData->xPos;
+        stringData->texturePosition[i].y = calculateYPos;
     }
 
     return (stringData->numberOfStringDrawed == stringData->numberOfStrings) ? 0 : -1;
@@ -121,6 +125,7 @@ int configStringData(stringData_t* stringData, int xPos, int yPos, Color color, 
     stringData->sizeText           = sizeText;
     stringData->StringTextures     = (RenderTexture2D*)calloc(stringData->numberOfStrings, sizeof(RenderTexture2D));
     stringData->textureNeedsUpdate = (bool*)calloc(stringData->numberOfStrings, sizeof(bool));
+    stringData->texturePosition    = (Vector2*)calloc(stringData->numberOfStrings, sizeof(Vector2));
     return 0;
 }
 
@@ -153,5 +158,44 @@ int freeTextureStrings(stringData_t* stringData)
     }
     free(stringData->StringTextures);
     free(stringData->textureNeedsUpdate);
+    free(stringData->texturePosition);
+    return 0;
+}
+void UpdatePosition(Vector2* position)
+{
+    if (IsKeyDown(KEY_RIGHT))
+        position->x += 5;
+    if (IsKeyDown(KEY_LEFT))
+        position->x -= 5;
+    if (IsKeyDown(KEY_DOWN))
+        position->y += 5;
+    if (IsKeyDown(KEY_UP))
+        position->y -= 5;
+}
+
+void UpdateFadeOut(float* alpha, bool* fadingOut)
+{
+    if (fadingOut)
+    {
+        *alpha -= 0.01f;
+        if (*alpha <= 0.0f)
+        {
+            *alpha     = 0.0f;
+            *fadingOut = false;
+        }
+    }
+}
+
+int fadeOutStringTextures(stringData_t* stringData, float alpha, bool fadingOut)
+{
+    for (int i = 0; i < stringData->numberOfStrings; i++)
+    {
+        Color     fadeColor = {255, 255, 255, (unsigned char)(alpha * 255)};
+        Rectangle sourceRec = {0, 0, (float)stringData->StringTextures[i].texture.width, -(float)stringData->StringTextures[i].texture.height};
+        Rectangle destRec   = {stringData->texturePosition[i].x, stringData->texturePosition[i].y, stringData->StringTextures[i].texture.width,
+                               stringData->StringTextures[i].texture.height};
+        Vector2   origin    = {0, 0};
+        DrawTexturePro(stringData->StringTextures[i].texture, sourceRec, destRec, origin, 0.0f, fadeColor);
+    }
     return 0;
 }

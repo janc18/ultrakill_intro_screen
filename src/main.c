@@ -1,9 +1,9 @@
 #include "drawingText.h"
 #include "manageAudio.h"
 #include "raylib.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
 int main(void)
 {
     const int screenWidth  = 1280;
@@ -40,34 +40,56 @@ int main(void)
     Texture2D texture2       = LoadTextureFromImage(image2);
     double    lastSwitchTime = 0;
     bool      showTexture1   = true;
-
+    Vector2   position       = {504, 500};
+    Rectangle sourceRect     = {0, 0, texture1.width, texture1.height};
+    float     alpha          = 1.0f; 
+    bool      fadingOut      = true;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
-        // Select the texture to draw
-        if (GetTime() - lastSwitchTime >= 0.5)
-        {
-            showTexture1   = !showTexture1;
-            lastSwitchTime = GetTime();
-        }
-        //  ---------
+        UpdatePosition(&position);
         BeginDrawing();
         ClearBackground(BLACK);
-        // Draw the strings
-        if (drawSecuenceOfStrings(&data) == 0)
+        // Draw the Strings
+        if (data.numberOfStringDrawed != data.numberOfStrings)
         {
-            drawSecuenceOfStrings(&details_array);
-        }
-        //  ---------
-
-        // Draw the textures
-        if (showTexture1)
-        {
-            DrawTexture(texture1, 1000, 500, WHITE);
+            drawSecuenceOfStrings(&data);
+            if (data.isCharacter)
+            {
+                DrawTextureRec(texture2, sourceRect, position, WHITE);
+                DrawTexture(texture2, 1000, 500, WHITE);
+                data.isCharacter = false;
+            }
+            else
+            {
+                DrawTexture(texture1, 1000, 500, WHITE);
+                DrawTextureRec(texture1, sourceRect, position, WHITE);
+            }
         }
         else
         {
-            DrawTexture(texture2, 1000, 500, WHITE);
+            if (details_array.numberOfStringDrawed != details_array.numberOfStrings)
+            {
+                drawSecuenceOfStrings(&details_array);
+                drawStringsThatHadBeenDrawed(&data);
+                if (details_array.isCharacter)
+                {
+                    DrawTextureRec(texture2, sourceRect, position, RED);
+                    DrawTexture(texture2, 1000, 500,WHITE);
+                    details_array.isCharacter = false;
+                }
+                else
+                {
+                    DrawTexture(texture1, 1000, 500,WHITE);
+                    DrawTextureRec(texture1, sourceRect, position,RED);
+                }
+            }
+            else
+            {
+                UpdateFadeOut(&alpha, &fadingOut);
+                fadeOutStringTextures(&details_array, alpha, fadingOut);
+                fadeOutStringTextures(&data, alpha, fadingOut);
+            }
         }
 
         //  ---------

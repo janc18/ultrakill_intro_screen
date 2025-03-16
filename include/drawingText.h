@@ -19,6 +19,8 @@ typedef struct stringData_t {
   Sound sound;
   int lastTextWidth;
   bool *textureNeedsUpdate;
+  Vector2 *texturePosition;
+  bool isCharacter;
 } stringData_t;
 
 int getRemainingChars(const char *text, int currentFrameCounter,
@@ -36,4 +38,7 @@ int generateStringData(int numberOfStringsToDraw, const char **stringsToDraw,
 RenderTexture2D createStringTexture(const char *string,
                                     stringData_t *stringData);
 int freeTextureStrings(stringData_t *stringData);
+void UpdatePosition(Vector2 *position);
+void  UpdateFadeOut(float *alpha,bool *fadingOut);
+int fadeOutStringTextures(stringData_t* stringData, float alpha, bool fadingOut);
 #endif
