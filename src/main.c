@@ -30,6 +30,9 @@ int main(void)
     // Create StringData_t structs and configure
     stringData_t data          = {0};
     stringData_t details_array = {0};
+    int          currentIndex;
+    int          endOfstring;
+    int          endOfSecuence = 1;
     generateStringData(4, information, &data, 210, 160, WHITE, 40, keySound);
     generateStringData(3, details, &details_array, 210, 340, RED, 40, keySound);
     // Loading images to be drawing
@@ -52,28 +55,16 @@ int main(void)
         BeginDrawing();
         ClearBackground(BLACK);
         // Draw the Strings
-        if (data.numberOfStringDrawed != data.numberOfStrings)
+        if (endOfSecuence != 0)
         {
-            drawSecuenceOfStrings(&data);
-            triggerEvent(&data, texture1, texture2, sourceRect, position);
+            endOfSecuence = drawStringSecuenciality(&currentIndex, &endOfstring, 2, &data, &details_array);
         }
         else
         {
-            if (details_array.numberOfStringDrawed != details_array.numberOfStrings)
-            {
-                drawSecuenceOfStrings(&details_array);
-                drawStringsThatHadBeenDrawed(&data);
-                triggerEvent(&details_array, texture1, texture2, sourceRect, position);
-            }
-            else
-            {
-                UpdateFadeOut(&alpha, &fadingOut);
-                fadeOutStringTextures(&details_array, alpha, fadingOut);
-                fadeOutStringTextures(&data, alpha, fadingOut);
-                fadeOutTexture(texture1, alpha, sourceRect, position);
-            }
+            UpdateFadeOut(&alpha, &fadingOut);
+            fadeOutStringTextures(&details_array, alpha, fadingOut);
+            fadeOutStringTextures(&data, alpha, fadingOut);
         }
-
         //  ---------
         EndDrawing();
     }

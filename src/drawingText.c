@@ -152,6 +152,10 @@ RenderTexture2D createStringTexture(const char* string, stringData_t* stringData
 
 int freeTextureStrings(stringData_t* stringData)
 {
+    if (stringData == NULL)
+    {
+        return -1;
+    }
     for (int i = 0; i < stringData->numberOfStrings; i++)
     {
         UnloadRenderTexture(stringData->StringTextures[i]);
@@ -219,4 +223,58 @@ int triggerEvent(stringData_t* stringData, Texture2D texture1, Texture2D texture
         DrawTextureRec(texture2, sourceRect, position, WHITE);
     }
     return 0;
+}
+int drawStringSecuenciality(int* currentIndexStructData, int* endOfASecuence, int numberOfStructs, ...)
+{
+    static stringData_t** array          = NULL;
+    static int            totalStructs   = 0;
+    static int            completedIndex = 0;
+    if (numberOfStructs > 0 && array == NULL)
+    {
+        va_list args;
+        va_start(args, numberOfStructs);
+
+        array        = malloc(numberOfStructs * sizeof(stringData_t*));
+        totalStructs = numberOfStructs;
+
+        for (int i = 0; i < numberOfStructs; i++)
+        {
+            array[i] = va_arg(args, stringData_t*);
+        }
+        va_end(args);
+
+        *currentIndexStructData = 0;
+        *endOfASecuence         = 0;
+        completedIndex          = 0;
+    }
+    if (array != NULL && *currentIndexStructData < totalStructs)
+    {
+        int result = drawSecuenceOfStrings(array[*currentIndexStructData]);
+        for (int i = 0; i < completedIndex; i++)
+        {
+            drawStringsThatHadBeenDrawed(array[i]);
+        }
+
+        if (result == 0)
+        {
+            completedIndex = *currentIndexStructData + 1;
+            (*currentIndexStructData)++;
+            if (*currentIndexStructData >= totalStructs)
+            {
+
+                *endOfASecuence = 1;
+                free(array);
+                array          = NULL;
+                totalStructs   = 0;
+                completedIndex = 0;
+                return 0;
+            }
+        }
+    }
+    else
+    {
+        *endOfASecuence = 1;
+    }
+
+    return 1;
 }
