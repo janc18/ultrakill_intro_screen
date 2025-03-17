@@ -1,6 +1,7 @@
 #include "drawingText.h"
 #include "manageAudio.h"
 #include "raylib.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -42,8 +43,8 @@ int main(void)
     bool      showTexture1   = true;
     Vector2   position       = {504, 500};
     Rectangle sourceRect     = {0, 0, texture1.width, texture1.height};
-    float     alpha          = 1.0f; 
-    bool      fadingOut      = true;
+    float     alpha          = 1.0f;
+    bool      fadingOut      = false;
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -54,17 +55,7 @@ int main(void)
         if (data.numberOfStringDrawed != data.numberOfStrings)
         {
             drawSecuenceOfStrings(&data);
-            if (data.isCharacter)
-            {
-                DrawTextureRec(texture2, sourceRect, position, WHITE);
-                DrawTexture(texture2, 1000, 500, WHITE);
-                data.isCharacter = false;
-            }
-            else
-            {
-                DrawTexture(texture1, 1000, 500, WHITE);
-                DrawTextureRec(texture1, sourceRect, position, WHITE);
-            }
+            triggerEvent(&data, texture1, texture2, sourceRect, position);
         }
         else
         {
@@ -72,23 +63,14 @@ int main(void)
             {
                 drawSecuenceOfStrings(&details_array);
                 drawStringsThatHadBeenDrawed(&data);
-                if (details_array.isCharacter)
-                {
-                    DrawTextureRec(texture2, sourceRect, position, RED);
-                    DrawTexture(texture2, 1000, 500,WHITE);
-                    details_array.isCharacter = false;
-                }
-                else
-                {
-                    DrawTexture(texture1, 1000, 500,WHITE);
-                    DrawTextureRec(texture1, sourceRect, position,RED);
-                }
+                triggerEvent(&details_array, texture1, texture2, sourceRect, position);
             }
             else
             {
                 UpdateFadeOut(&alpha, &fadingOut);
                 fadeOutStringTextures(&details_array, alpha, fadingOut);
                 fadeOutStringTextures(&data, alpha, fadingOut);
+                fadeOutTexture(texture1, alpha, sourceRect, position);
             }
         }
 

@@ -45,7 +45,7 @@ int drawSecuenceOfStrings(stringData_t* stringData)
 
         if (stringData->framesCounter % 10 == 0 && !isSpace)
         {
-            stringData->isCharacter     = true;
+            stringData->isCharacter = true;
             PlaySound(stringData->sound);
         }
     }
@@ -196,6 +196,27 @@ int fadeOutStringTextures(stringData_t* stringData, float alpha, bool fadingOut)
                                stringData->StringTextures[i].texture.height};
         Vector2   origin    = {0, 0};
         DrawTexturePro(stringData->StringTextures[i].texture, sourceRec, destRec, origin, 0.0f, fadeColor);
+    }
+    return 0;
+}
+
+int fadeOutTexture(Texture2D texture, float alpha, Rectangle sourceRect, Vector2 position)
+{
+    Color fadeColor = {255, 255, 255, (unsigned char)(alpha * 255)};
+    DrawTextureRec(texture, sourceRect, position, fadeColor);
+    return 0;
+}
+
+int triggerEvent(stringData_t* stringData, Texture2D texture1, Texture2D texture2, Rectangle sourceRect, Vector2 position)
+{
+    if (stringData->isCharacter)
+    {
+        DrawTextureRec(texture1, sourceRect, position, WHITE);
+        stringData->isCharacter = false;
+    }
+    else
+    {
+        DrawTextureRec(texture2, sourceRect, position, WHITE);
     }
     return 0;
 }

@@ -41,4 +41,6 @@ int freeTextureStrings(stringData_t *stringData);
 void UpdatePosition(Vector2 *position);
 void  UpdateFadeOut(float *alpha,bool *fadingOut);
 int fadeOutStringTextures(stringData_t* stringData, float alpha, bool fadingOut);
+int triggerEvent(stringData_t *stringData,Texture2D texture1,Texture2D texture2,Rectangle sourceRect,Vector2 position);
+int fadeOutTexture(Texture2D texture, float alpha,Rectangle sourceRect,Vector2 position);
 #endif
