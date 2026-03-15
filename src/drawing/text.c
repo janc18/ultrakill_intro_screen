@@ -45,7 +45,7 @@ int drawSecuenceOfStrings(stringData_t* stringData)
 
         if (stringData->framesCounter % 10 == 0 && !isSpace)
         {
-            stringData->isCharacter     = true;
+            stringData->isCharacter = true;
             PlaySound(stringData->sound);
         }
     }
@@ -152,6 +152,10 @@ RenderTexture2D createStringTexture(const char* string, stringData_t* stringData
 
 int freeTextureStrings(stringData_t* stringData)
 {
+    if (stringData == NULL)
+    {
+        return -1;
+    }
     for (int i = 0; i < stringData->numberOfStrings; i++)
     {
         UnloadRenderTexture(stringData->StringTextures[i]);
@@ -198,4 +202,79 @@ int fadeOutStringTextures(stringData_t* stringData, float alpha, bool fadingOut)
         DrawTexturePro(stringData->StringTextures[i].texture, sourceRec, destRec, origin, 0.0f, fadeColor);
     }
     return 0;
+}
+
+int fadeOutTexture(Texture2D texture, float alpha, Rectangle sourceRect, Vector2 position)
+{
+    Color fadeColor = {255, 255, 255, (unsigned char)(alpha * 255)};
+    DrawTextureRec(texture, sourceRect, position, fadeColor);
+    return 0;
+}
+
+int triggerEvent(stringData_t* stringData, Texture2D texture1, Texture2D texture2, Rectangle sourceRect, Vector2 position)
+{
+    if (stringData->isCharacter)
+    {
+        DrawTextureRec(texture1, sourceRect, position, WHITE);
+        stringData->isCharacter = false;
+    }
+    else
+    {
+        DrawTextureRec(texture2, sourceRect, position, WHITE);
+    }
+    return 0;
+}
+int drawStringSecuenciality(int* currentIndexStructData, int* endOfASecuence, int numberOfStructs, ...)
+{
+    static stringData_t** array          = NULL;
+    static int            totalStructs   = 0;
+    static int            completedIndex = 0;
+    if (numberOfStructs > 0 && array == NULL)
+    {
+        va_list args;
+        va_start(args, numberOfStructs);
+
+        array        = malloc(numberOfStructs * sizeof(stringData_t*));
+        totalStructs = numberOfStructs;
+
+        for (int i = 0; i < numberOfStructs; i++)
+        {
+            array[i] = va_arg(args, stringData_t*);
+        }
+        va_end(args);
+
+        *currentIndexStructData = 0;
+        *endOfASecuence         = 0;
+        completedIndex          = 0;
+    }
+    if (array != NULL && *currentIndexStructData < totalStructs)
+    {
+        int result = drawSecuenceOfStrings(array[*currentIndexStructData]);
+        for (int i = 0; i < completedIndex; i++)
+        {
+            drawStringsThatHadBeenDrawed(array[i]);
+        }
+
+        if (result == 0)
+        {
+            completedIndex = *currentIndexStructData + 1;
+            (*currentIndexStructData)++;
+            if (*currentIndexStructData >= totalStructs)
+            {
+
+                *endOfASecuence = 1;
+                free(array);
+                array          = NULL;
+                totalStructs   = 0;
+                completedIndex = 0;
+                return 0;
+            }
+        }
+    }
+    else
+    {
+        *endOfASecuence = 1;
+    }
+
+    return 1;
 }

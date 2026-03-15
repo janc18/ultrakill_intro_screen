@@ -1,6 +1,7 @@
 #include "drawing/text.h"
 #include "audio/manageAudio.h"
 #include "raylib.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -29,6 +30,9 @@ int main(void)
     // Create StringData_t structs and configure
     stringData_t data          = {0};
     stringData_t details_array = {0};
+    int          currentIndex;
+    int          endOfstring;
+    int          endOfSecuence = 1;
     generateStringData(4, information, &data, 210, 160, WHITE, 40, keySound);
     generateStringData(3, details, &details_array, 210, 340, RED, 40, keySound);
     // Loading images to be drawing
@@ -58,47 +62,16 @@ int main(void)
         BeginDrawing();
         ClearBackground(BLACK);
         // Draw the Strings
-        if (data.numberOfStringDrawed != data.numberOfStrings)
+        if (endOfSecuence != 0)
         {
-            drawSecuenceOfStrings(&data);
-            if (data.isCharacter)
-            {
-                DrawTextureRec(texture2, sourceRect, position, WHITE);
-                DrawTexture(texture2, 1000, 500, WHITE);
-                data.isCharacter = false;
-            }
-            else
-            {
-                DrawTexture(texture1, 1000, 500, WHITE);
-                DrawTextureRec(texture1, sourceRect, position, WHITE);
-            }
+            endOfSecuence = drawStringSecuenciality(&currentIndex, &endOfstring, 2, &data, &details_array);
         }
         else
         {
-            if (details_array.numberOfStringDrawed != details_array.numberOfStrings)
-            {
-                drawSecuenceOfStrings(&details_array);
-                drawStringsThatHadBeenDrawed(&data);
-                if (details_array.isCharacter)
-                {
-                    DrawTextureRec(texture2, sourceRect, position, RED);
-                    DrawTexture(texture2, 1000, 500,WHITE);
-                    details_array.isCharacter = false;
-                }
-                else
-                {
-                    DrawTexture(texture1, 1000, 500,WHITE);
-                    DrawTextureRec(texture1, sourceRect, position,RED);
-                }
-            }
-            else
-            {
-                UpdateFadeOut(&alpha, &fadingOut);
-                fadeOutStringTextures(&details_array, alpha, fadingOut);
-                fadeOutStringTextures(&data, alpha, fadingOut);
-            }
+            UpdateFadeOut(&alpha, &fadingOut);
+            fadeOutStringTextures(&details_array, alpha, fadingOut);
+            fadeOutStringTextures(&data, alpha, fadingOut);
         }
-
         EndDrawing();
         Image img = LoadImageFromScreen();
         fwrite(img.data, 1, screenWidth * screenHeight * 4, ffmpeg);
