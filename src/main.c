@@ -1,5 +1,5 @@
-#include "drawingText.h"
-#include "manageAudio.h"
+#include "drawing/text.h"
+#include "audio/manageAudio.h"
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@ int main(void)
     // Strings to draw
     const char* status    = TextFormat("STATUS UPDATE:");
     const char* machineId = TextFormat("%-29s V1", "MACHINE ID:");
-    const char* location  = TextFormat("%-29s APPROCHING HELL", "LOCATION:");
+    const char* location  = TextFormat("%-29s APPROACHING HELL", "LOCATION:");
     const char* objetive  = TextFormat("%-23s FIND A WEAPON", "CURRENT OBJECTIVE:");
     const char  mankind[] = "MANKIND IS DEAD.";
     const char  blood[]   = "BLOOD IS FUEL.";
@@ -32,8 +32,8 @@ int main(void)
     generateStringData(4, information, &data, 210, 160, WHITE, 40, keySound);
     generateStringData(3, details, &details_array, 210, 340, RED, 40, keySound);
     // Loading images to be drawing
-    Image image1 = LoadImage("../../resources/images/1.png");
-    Image image2 = LoadImage("../../resources/images/2.png");
+    Image image1 = LoadImage("../resources/images/1.png");
+    Image image2 = LoadImage("../resources/images/2.png");
     ImageResize(&image1, image1.width / 2.5, image1.height / 2.5);
     ImageResize(&image2, image2.width / 2.5, image2.height / 2.5);
     Texture2D texture1       = LoadTextureFromImage(image1);
@@ -44,7 +44,14 @@ int main(void)
     Rectangle sourceRect     = {0, 0, texture1.width, texture1.height};
     float     alpha          = 1.0f; 
     bool      fadingOut      = true;
-    SetTargetFPS(60);
+
+    FILE *ffmpeg = popen(
+        "ffmpeg -y -f rawvideo -pixel_format rgba "
+        "-video_size 1280x720 -framerate 60 -i - "
+        " output.mp4",
+        "w");
+
+        SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         UpdatePosition(&position);
@@ -92,15 +99,20 @@ int main(void)
             }
         }
 
-        //  ---------
         EndDrawing();
+        Image img = LoadImageFromScreen();
+        fwrite(img.data, 1, screenWidth * screenHeight * 4, ffmpeg);
+        UnloadImage(img);
     }
+        //  ---------
+ 
     freeTextureStrings(&data);
     freeTextureStrings(&details_array);
     UnloadImage(image1);
     UnloadImage(image2);
     UnloadSound(keySound);
     CloseAudioDevice();
+    pclose(ffmpeg);
     CloseWindow();
 
     return 0;
