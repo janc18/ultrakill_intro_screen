@@ -1,4 +1,4 @@
-#include "manageAudio.h"
+#include "audio/manageAudio.h"
 #include <math.h>
 #include <raylib.h>
 #include <stdlib.h>
