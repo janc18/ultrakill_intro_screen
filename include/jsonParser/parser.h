@@ -1,22 +1,25 @@
 #if !defined(PARSER)
 #define PARSER
 #include <stdbool.h>
-
+#include <raylib.h>
+#define MAXTEXTCHARACTERS 250
+#define MAXEFFECTCHARACTERS 50
+#define MAXCOLORCHARACTERS 50
 typedef struct phrase_t
 {
-    char text[255];
-    char effect[50];
+    char text[MAXTEXTCHARACTERS];
+    char effect[MAXEFFECTCHARACTERS];
     float time;
     bool skip;
-    int xPos;
-    int yPos;
+    int x;
+    int y;
+    int sizeFont;
+    char color[MAXCOLORCHARACTERS];
 }phrase_t;
 
-enum EFFECT{
+enum STATUS{
     ERROR=-1,
-    NO_EFFECT=0,
-    RED,
-    BLUR
+    OK=0
 };
 
 int testingHowWorks(char* string);
