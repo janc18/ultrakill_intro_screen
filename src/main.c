@@ -1,5 +1,6 @@
-#include "drawing/text.h"
+#include "terminalEngine/v1View.h"
 #include "audio/manageAudio.h"
+#include "movement/keysMovement.h"
 #include "raylib.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -10,17 +11,7 @@ int main(void)
     const int screenWidth  = 1280;
     const int screenHeight = 720;
     InitWindow(screenWidth, screenHeight, "V1");
-    // Strings to draw
-    const char* status    = TextFormat("STATUS UPDATE:");
-    const char* machineId = TextFormat("%-29s V1", "MACHINE ID:");
-    const char* location  = TextFormat("%-29s APPROACHING HELL", "LOCATION:");
-    const char* objetive  = TextFormat("%-23s FIND A WEAPON", "CURRENT OBJECTIVE:");
-    const char  mankind[] = "MANKIND IS DEAD.";
-    const char  blood[]   = "BLOOD IS FUEL.";
-    const char  hell[]    = "HELL IS FULL.";
-    // Add each string to a string array
-    const char* details[]     = {mankind, blood, hell};
-    const char* information[] = {status, machineId, location, objetive};
+  
     // Audio initiation and loading sound to each stringData
     InitAudioDevice();
     srand(time(NULL));
@@ -28,13 +19,7 @@ int main(void)
     int   samples    = sampleRate * 0.0186;
     Sound keySound   = generateSimpleSound(sampleRate, samples);
     // Create StringData_t structs and configure
-    stringData_t data          = {0};
-    stringData_t details_array = {0};
-    int          currentIndex;
-    int          endOfstring;
-    int          endOfSecuence = 1;
-    generateStringData(4, information, &data, 210, 160, WHITE, 40, keySound);
-    generateStringData(3, details, &details_array, 210, 340, RED, 40, keySound);
+
     // Loading images to be drawing
     Image image1 = LoadImage("../resources/images/1.png");
     Image image2 = LoadImage("../resources/images/2.png");
@@ -61,26 +46,12 @@ int main(void)
         UpdatePosition(&position);
         BeginDrawing();
         ClearBackground(BLACK);
-        // Draw the Strings
-        if (endOfSecuence != 0)
-        {
-            endOfSecuence = drawStringSecuenciality(&currentIndex, &endOfstring, 2, &data, &details_array);
-        }
-        else
-        {
-            UpdateFadeOut(&alpha, &fadingOut);
-            fadeOutStringTextures(&details_array, alpha, fadingOut);
-            fadeOutStringTextures(&data, alpha, fadingOut);
-        }
         EndDrawing();
         Image img = LoadImageFromScreen();
         fwrite(img.data, 1, screenWidth * screenHeight * 4, ffmpeg);
         UnloadImage(img);
     }
         //  ---------
- 
-    freeTextureStrings(&data);
-    freeTextureStrings(&details_array);
     UnloadImage(image1);
     UnloadImage(image2);
     UnloadSound(keySound);
