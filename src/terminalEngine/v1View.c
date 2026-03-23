@@ -14,7 +14,7 @@ void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw)
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
         d->messages[i].active = false;
-        d->drew[i]=false;
+        d->drew[i]            = false;
     }
     d->PhrasesToDraw = PhrasesToDraw;
     d->currentIndex  = 0;
@@ -36,9 +36,16 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
 
         m->elapsed += dt;
 
+        if (!m->skip)
+        {
+            m->active  = true;
+            d->drew[i] = false; // Finish
+            continue;
+        }
+
         if (m->elapsed >= m->lifetime)
         {
-            
+
             m->active  = false;
             d->drew[i] = true; // Finish
         }
@@ -49,7 +56,7 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
  * if current isn't active
  * copy all contents to the dispatcher
  */
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime,bool skip)
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip)
 {
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
@@ -65,7 +72,7 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
             m->fadeIn   = 0.2f;
             m->fadeOut  = 0.5f;
             m->active   = true;
-            m->skip= skip;
+            m->skip     = skip;
             return;
         }
     }
@@ -94,8 +101,15 @@ void terminalDispatcher_Draw(terminalMessages_t* d)
         }
         if (m->elapsed > m->lifetime - m->fadeOut)
         {
-            float t = (m->lifetime - m->elapsed) / m->fadeOut;
-            alpha   = t;
+            if (!m->skip)
+            {
+                alpha = 1.0f;
+            }
+            else
+            {
+                float t = (m->lifetime - m->elapsed) / m->fadeOut;
+                alpha   = t;
+            }
         }
 
         Color c = RED;
@@ -120,7 +134,8 @@ void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
 
     if (!dispatcher->messages[0].active)
     {
-        dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,Phrase[index].skip);
+        dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,
+                                Phrase[index].skip);
     }
 }
 
@@ -132,8 +147,20 @@ void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase)
     }
     for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
     {
-        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time,Phrase[i].skip);
+        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time, Phrase[i].skip);
     }
     dispatcher->allDispatched = true;
-} 
+}
 
+void scheduleFadeOutAllSkip(terminalMessages_t* dispatcher)
+{
+    for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
+    {
+        terminal_t* message = &dispatcher->messages[i];
+        if (!message->skip)
+        {
+            message->elapsed = message->lifetime - message->fadeOut;
+            message->skip    = true;
+        }
+    }
+}

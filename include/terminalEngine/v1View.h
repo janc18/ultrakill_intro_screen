@@ -40,6 +40,8 @@ void terminalDispatcher_Draw(terminalMessages_t* d);
 
 void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase);
 void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase);
+void scheduleFadeOutAllSkip(terminalMessages_t* dispatcher);
+
 
 int v1View();
 
