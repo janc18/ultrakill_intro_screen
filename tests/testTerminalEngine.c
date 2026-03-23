@@ -30,15 +30,18 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
     SetTargetFPS(60);
     terminalMessages_t dispatcher;
-    terminalDispatcher_Init(&dispatcher,PhrasesDetected);
+    terminalDispatcher_Init(&dispatcher, PhrasesDetected);
     while (!WindowShouldClose())
     {
         BeginDrawing();
         float dt = GetFrameTime();
         ClearBackground(RAYWHITE);
-  
-        //scheduleSequentially(&dispatcher,Phrases);
-        scheduleAllAtTheTime(&dispatcher,Phrases);
+        if (IsKeyPressed(KEY_LEFT))
+        {
+            scheduleFadeOutAllSkip(&dispatcher);
+        }
+        // scheduleSequentially(&dispatcher,Phrases);
+        scheduleAllAtTheTime(&dispatcher, Phrases);
         terminalDispatcher_Update(&dispatcher, dt);
         terminalDispatcher_Draw(&dispatcher);
         EndDrawing();
