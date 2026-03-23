@@ -35,7 +35,7 @@ int main(void)
     {
         BeginDrawing();
         float dt = GetFrameTime();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
         if (IsKeyPressed(KEY_LEFT))
         {
             scheduleFadeOutAllSkip(&dispatcher);
