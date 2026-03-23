@@ -56,7 +56,7 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
  * if current isn't active
  * copy all contents to the dispatcher
  */
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip)
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect)
 {
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
@@ -64,6 +64,7 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
         {
             terminal_t* m = &d->messages[i];
             strcpy(m->text, text);
+            strcpy(m->effect, effect);
             m->x        = x;
             m->y        = y;
             m->fontSize = fontSize;
@@ -114,8 +115,25 @@ void terminalDispatcher_Draw(terminalMessages_t* d)
 
         Color c = RED;
         c.a     = (unsigned char)(alpha * 255);
-        DrawText(m->text, m->x, m->y, m->fontSize, c);
+        if (strcmp("TYPE", m->effect) == 0)
+        {
+            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, c, m);
+        }
+        else
+        {
+            DrawText(m->text, m->x, m->y, m->fontSize, c);
+        }
     }
+}
+
+void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, terminal_t* m)
+{
+    int  sizeString  = strlen(text);
+    int  currentChar = (m->elapsed / m->lifetime) * fontSize;
+    char buffer[200] = {0};
+    // TODO add a special process to no skipeable phrase
+    strncpy(buffer, text, currentChar);
+    DrawText(buffer, m->x, m->y, m->fontSize, color);
 }
 
 // MOVE to another file
@@ -135,7 +153,7 @@ void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
     if (!dispatcher->messages[0].active)
     {
         dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,
-                                Phrase[index].skip);
+                                Phrase[index].skip, Phrase[index].effect);
     }
 }
 
@@ -147,7 +165,8 @@ void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase)
     }
     for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
     {
-        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time, Phrase[i].skip);
+        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time, Phrase[i].skip,
+                                Phrase[i].effect);
     }
     dispatcher->allDispatched = true;
 }
