@@ -1,17 +1,23 @@
 #include "jsonParser/parser.h"
 #include "terminalEngine/v1View.h"
+#include "textScheduler/scheduler.h"
 #include <fcntl.h>
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(void)
+int main(int argc,char *argv[])
 {
+    if (argc<2){
+        printf("File path not specified, closing\n");
+        exit(1);
+    }
 
-    int fd = open("inputMessages.json", O_RDWR);
+    int fd = open(argv[1], O_RDWR);
     if (fd == -1)
     {
+        printf("Messages don't found, closing\n");
         exit(1);
     }
     char json[2048];
@@ -38,10 +44,11 @@ int main(void)
         ClearBackground(BLACK);
         if (IsKeyPressed(KEY_LEFT))
         {
-            scheduleFadeOutAllSkip(&dispatcher);
+          //  scheduleFadeOutAllSkip(&dispatcher);
         }
-        // scheduleSequentially(&dispatcher,Phrases);
-        scheduleAllAtTheTime(&dispatcher, Phrases);
+        
+        scheduleSequentially(&dispatcher,Phrases);//if one is skip==false it keep in that loop
+        //scheduleAllAtTheTime(&dispatcher, Phrases);// all skip==false stay in the screen 
         terminalDispatcher_Update(&dispatcher, dt);
         terminalDispatcher_Draw(&dispatcher);
         EndDrawing();
