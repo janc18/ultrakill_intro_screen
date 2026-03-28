@@ -55,58 +55,58 @@ int getPhrases(char* string, phrase_t* Phrases, int* numberOfPhrasesDetected, in
     cJSON_ArrayForEach(phrasesJson, introData)
     {
         cJSON* text = cJSON_GetObjectItemCaseSensitive(phrasesJson, "text");
-        if (!cJSON_IsString(text))
+        if (!cJSON_IsString(text)||text==NULL)
         {
-            printf("ERROR: text");
+            printf("ERROR: text\n");
             status = ERROR;
             goto end;
         }
         cJSON* effect = cJSON_GetObjectItemCaseSensitive(phrasesJson, "effect");
-        if (!cJSON_IsString(effect))
+        if (!cJSON_IsString(effect)||effect==NULL)
         {
             status = ERROR;
-            printf("ERROR: effect");
+            printf("ERROR: effect\n");
             goto end;
         }
         cJSON* time = cJSON_GetObjectItemCaseSensitive(phrasesJson, "time");
-        if (!cJSON_IsNumber(time))
+        if (!cJSON_IsNumber(time)||time==NULL)
         {
             status = ERROR;
-            printf("ERROR: time");
+            printf("ERROR: time\n");
             goto end;
         }
         cJSON* xPos = cJSON_GetObjectItemCaseSensitive(phrasesJson, "xPos");
-        if (!cJSON_IsNumber(time))
+        if (!cJSON_IsNumber(time)||xPos==NULL)
         {
             status = ERROR;
-            printf("ERROR: xPos");
+            printf("ERROR: xPos\n");
             goto end;
         }
         cJSON* yPos = cJSON_GetObjectItemCaseSensitive(phrasesJson, "yPos");
-        if (!cJSON_IsNumber(time))
+        if (!cJSON_IsNumber(time)||yPos==NULL)
         {
             status = ERROR;
-            printf("ERROR: yPos");
+            printf("ERROR: yPos\n");
             goto end;
         }
         cJSON* sizeFont = cJSON_GetObjectItemCaseSensitive(phrasesJson, "sizeFont");
-        if (!cJSON_IsNumber(sizeFont))
+        if (!cJSON_IsNumber(sizeFont)||sizeFont==NULL)
         {
             status = ERROR;
-            printf("ERROR: sizeFont");
+            printf("ERROR: sizeFont\n");
             goto end;
         }
         cJSON* color = cJSON_GetObjectItemCaseSensitive(phrasesJson, "color");
-        if (!cJSON_IsString(color))
+        if (!cJSON_IsString(color)||color==NULL)
         {
             status = ERROR;
-            printf("ERROR: Color");
+            printf("ERROR: Color\n");
             goto end;
         }
         cJSON* skip = cJSON_GetObjectItemCaseSensitive(phrasesJson, "skip");
-        if (!cJSON_IsBool(skip))
+        if (!cJSON_IsBool(skip)||skip==NULL)
         {
-            printf("ERROR: skip");
+            printf("ERROR: skip\n");
             status = ERROR;
             goto end;
         }
