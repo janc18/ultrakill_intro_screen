@@ -36,12 +36,7 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt);
 void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip,char *effect);
 void terminalDispatcher_Draw(terminalMessages_t* d);
 
-// MOVE to another file
 
-void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase);
-void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase);
-void scheduleFadeOutAllSkip(terminalMessages_t* dispatcher);
-// MOVE to another file
 
 void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, terminal_t* m);
 
