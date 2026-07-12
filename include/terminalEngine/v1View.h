@@ -33,8 +33,9 @@ typedef struct terminalMessages_t
 
 void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw);
 void terminalDispatcher_Update(terminalMessages_t* d, float dt);
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip,char *effect);
-void terminalDispatcher_Draw(terminalMessages_t* d);
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect,char* color);
+void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases);
+Color processColor(char *colorText);
 
 
 

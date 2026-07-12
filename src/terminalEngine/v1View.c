@@ -1,6 +1,7 @@
 #include "terminalEngine/v1View.h"
 #include <stdio.h>
 #include <string.h>
+#include "textScheduler/scheduler.h"
 int v1View()
 {
     return 5;
@@ -27,7 +28,8 @@ void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw)
  */
 void terminalDispatcher_Update(terminalMessages_t* d, float dt)
 {
-    for (int i = 0; i < MAXTERMINALMESSAGES; i++)
+    int i =0;
+    for (i; i < MAXTERMINALMESSAGES; i++)
     {
         terminal_t* m = &d->messages[i];
 
@@ -45,18 +47,19 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
 
         if (m->elapsed >= m->lifetime)
         {
-
             m->active  = false;
-            d->drew[i] = true; // Finish
+            d->drew[d->currentIndex] = true; // Finish
+            printf("%d\n",d->currentIndex);
         }
     }
+    
 }
 
 /*
  * if current isn't active
  * copy all contents to the dispatcher
  */
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect)
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect,char* color)
 {
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
@@ -73,6 +76,7 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
             m->fadeIn   = 0.2f;
             m->fadeOut  = 0.5f;
             m->active   = true;
+            m->color=processColor(color);
             m->skip     = skip;
             return;
         }
@@ -86,8 +90,10 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
  * if current elapsed is more than current lifetime subtract fadeout
  *  - alpha is equal to (lifetime substract elapsed) divided by fadeout
  */
-void terminalDispatcher_Draw(terminalMessages_t* d)
+void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases)
 {
+        DrawPhrases(d,Phrases);
+
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
         terminal_t* m = &d->messages[i];
@@ -105,25 +111,23 @@ void terminalDispatcher_Draw(terminalMessages_t* d)
             if (!m->skip)
             {
                 alpha = 1.0f;
-            }
-            else
+            }else
             {
                 float t = (m->lifetime - m->elapsed) / m->fadeOut;
                 alpha   = t;
             }
         }
 
-        Color c = RED;
-        c.a     = (unsigned char)(alpha * 255);
         if (strcmp("TYPE", m->effect) == 0)
         {
-            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, c, m);
+            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, m->color, m);
         }
         else
         {
-            DrawText(m->text, m->x, m->y, m->fontSize, c);
+            DrawText(m->text, m->x, m->y, m->fontSize, m->color);
         }
     }
+
 }
 
 void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, terminal_t* m)
@@ -136,3 +140,14 @@ void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, ter
     DrawText(buffer, m->x, m->y, m->fontSize, color);
 }
 
+Color processColor(char *colorText){
+    if (strcmp(colorText,"BLUE")==0){
+        return BLUE;
+    }
+    else if (strcmp(colorText,"RED")==0){
+        return RED;
+    }else if (strcmp(colorText,"WHITE")==0){
+        return WHITE;
+    }
+    return GREEN;
+}
