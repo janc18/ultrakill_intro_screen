@@ -1,0 +1,74 @@
+{
+    "intro": [
+        {
+            "text": "STATUS UPDATE:",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 100,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "MACHINE ID:",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 130,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "LOCATION:",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 160,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "CURRENT OBJECTIVE:",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 190,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "MANKIND IS DEAD.",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 220,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "BLOOD IS FUEL.",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 250,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        },
+        {
+            "text": "HELL IS FULL",
+            "effect": "TYPE",
+            "time": 4,
+            "xPos": 100,
+            "yPos": 280,
+            "sizeFont": 30,
+            "color": "BLUE",
+            "skip": true
+        }
+    ]
+}

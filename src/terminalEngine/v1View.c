@@ -1,6 +1,7 @@
 #include "terminalEngine/v1View.h"
 #include <stdio.h>
 #include <string.h>
+#include "textScheduler/scheduler.h"
 int v1View()
 {
     return 5;
@@ -14,7 +15,7 @@ void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw)
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
         d->messages[i].active = false;
-        d->drew[i]=false;
+        d->drew[i]            = false;
     }
     d->PhrasesToDraw = PhrasesToDraw;
     d->currentIndex  = 0;
@@ -27,7 +28,8 @@ void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw)
  */
 void terminalDispatcher_Update(terminalMessages_t* d, float dt)
 {
-    for (int i = 0; i < MAXTERMINALMESSAGES; i++)
+    int i =0;
+    for (i; i < MAXTERMINALMESSAGES; i++)
     {
         terminal_t* m = &d->messages[i];
 
@@ -36,20 +38,28 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
 
         m->elapsed += dt;
 
+        if (!m->skip)
+        {
+            m->active  = true;
+            d->drew[i] = false; // Finish
+            continue;
+        }
+
         if (m->elapsed >= m->lifetime)
         {
-            
             m->active  = false;
-            d->drew[i] = true; // Finish
+            d->drew[d->currentIndex] = true; // Finish
+            printf("%d\n",d->currentIndex);
         }
     }
+    
 }
 
 /*
  * if current isn't active
  * copy all contents to the dispatcher
  */
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime,bool skip)
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect,char* color)
 {
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
@@ -57,6 +67,7 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
         {
             terminal_t* m = &d->messages[i];
             strcpy(m->text, text);
+            strcpy(m->effect, effect);
             m->x        = x;
             m->y        = y;
             m->fontSize = fontSize;
@@ -65,7 +76,8 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
             m->fadeIn   = 0.2f;
             m->fadeOut  = 0.5f;
             m->active   = true;
-            m->skip= skip;
+            m->color=processColor(color);
+            m->skip     = skip;
             return;
         }
     }
@@ -78,8 +90,10 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
  * if current elapsed is more than current lifetime subtract fadeout
  *  - alpha is equal to (lifetime substract elapsed) divided by fadeout
  */
-void terminalDispatcher_Draw(terminalMessages_t* d)
+void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases)
 {
+        DrawPhrases(d,Phrases);
+
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
         terminal_t* m = &d->messages[i];
@@ -94,46 +108,46 @@ void terminalDispatcher_Draw(terminalMessages_t* d)
         }
         if (m->elapsed > m->lifetime - m->fadeOut)
         {
-            float t = (m->lifetime - m->elapsed) / m->fadeOut;
-            alpha   = t;
+            if (!m->skip)
+            {
+                alpha = 1.0f;
+            }else
+            {
+                float t = (m->lifetime - m->elapsed) / m->fadeOut;
+                alpha   = t;
+            }
         }
 
-        Color c = RED;
-        c.a     = (unsigned char)(alpha * 255);
-        DrawText(m->text, m->x, m->y, m->fontSize, c);
+        if (strcmp("TYPE", m->effect) == 0)
+        {
+            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, m->color, m);
+        }
+        else
+        {
+            DrawText(m->text, m->x, m->y, m->fontSize, m->color);
+        }
     }
+
 }
 
-// MOVE to another file
-
-void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
+void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, terminal_t* m)
 {
-    int index = dispatcher->currentIndex;
-    if (dispatcher->currentIndex >= dispatcher->PhrasesToDraw)
-    {
-        return;
-    }
-    if (dispatcher->messages[0].elapsed >= dispatcher->messages[0].lifetime)
-    {
-        dispatcher->currentIndex++;
-    }
-
-    if (!dispatcher->messages[0].active)
-    {
-        dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,Phrase[index].skip);
-    }
+    int  sizeString  = strlen(text);
+    int  currentChar = (m->elapsed / m->lifetime) * fontSize;
+    char buffer[200] = {0};
+    // TODO add a special process to no skipeable phrase
+    strncpy(buffer, text, currentChar);
+    DrawText(buffer, m->x, m->y, m->fontSize, color);
 }
 
-void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase)
-{
-    if (dispatcher->allDispatched)
-    {
-        return;
+Color processColor(char *colorText){
+    if (strcmp(colorText,"BLUE")==0){
+        return BLUE;
     }
-    for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
-    {
-        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time,Phrase[i].skip);
+    else if (strcmp(colorText,"RED")==0){
+        return RED;
+    }else if (strcmp(colorText,"WHITE")==0){
+        return WHITE;
     }
-    dispatcher->allDispatched = true;
-} 
-
+    return GREEN;
+}

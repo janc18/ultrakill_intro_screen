@@ -17,8 +17,8 @@ typedef struct terminal_t
     float fadeOut;
     int   fontSize;
     bool  active;
-    int   effect;
     bool  skip;
+    char effect[40];
 } terminal_t;
 
 typedef struct terminalMessages_t
@@ -33,13 +33,14 @@ typedef struct terminalMessages_t
 
 void terminalDispatcher_Init(terminalMessages_t* d, int PhrasesToDraw);
 void terminalDispatcher_Update(terminalMessages_t* d, float dt);
-void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime,bool skip);
-void terminalDispatcher_Draw(terminalMessages_t* d);
+void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect,char* color);
+void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases);
+Color processColor(char *colorText);
 
-// MOVE to another file
 
-void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase);
-void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase);
+
+void drawTextTypeWriter(char* text, int x, int y, int fontSize, Color color, terminal_t* m);
+
 
 int v1View();
 

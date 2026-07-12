@@ -38,6 +38,7 @@ add_executable(test_terminalEngine
     src/terminalEngine/v1View.c
     src/parserJson/cJSON.c
     src/parserJson/parser.c
+    src/textScheduler/scheduler.c
 )
 
 target_include_directories(test_terminalEngine PRIVATE
