@@ -55,7 +55,6 @@ void DrawPhrases(terminalMessages_t* d, phrase_t* Phrase)
         {
             printf("%s,%d,%d,%d\n",Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont);
             DrawText(Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont, processColor(Phrase->color));
-            printf("Dibujando %s\n", Phrase[indexDisplacement].text);
             d->drew[indexDisplacement]=false;
         }
     }
