@@ -31,28 +31,30 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt)
     int i =0;
     for (i; i < MAXTERMINALMESSAGES; i++)
     {
-        terminal_t* m = &d->messages[i];
+        keepInScreen(d,dt,i);
+    }
+    
+}
 
+void keepInScreen(terminalMessages_t* d, float dt,int index){
+        terminal_t* m = &d->messages[index];  
         if (!m->active)
-            continue;
+        return;
 
         m->elapsed += dt;
 
         if (!m->skip)
         {
             m->active  = true;
-            d->drew[i] = false; // Finish
-            continue;
+            d->drew[index] = false; // Finish
+            return;
         }
 
         if (m->elapsed >= m->lifetime)
         {
             m->active  = false;
             d->drew[d->currentIndex] = true; // Finish
-            printf("%d\n",d->currentIndex);
         }
-    }
-    
 }
 
 /*
@@ -92,40 +94,15 @@ void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int
  */
 void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases)
 {
-        DrawPhrases(d,Phrases);
+    DrawPhrases(d,Phrases);
 
     for (int i = 0; i < MAXTERMINALMESSAGES; i++)
     {
         terminal_t* m = &d->messages[i];
         if (!m->active)
             continue;
-
-        float alpha = 1.0f;
-
-        if (m->elapsed < m->fadeIn)
-        {
-            alpha = m->elapsed / m->fadeIn;
-        }
-        if (m->elapsed > m->lifetime - m->fadeOut)
-        {
-            if (!m->skip)
-            {
-                alpha = 1.0f;
-            }else
-            {
-                float t = (m->lifetime - m->elapsed) / m->fadeOut;
-                alpha   = t;
-            }
-        }
-
-        if (strcmp("TYPE", m->effect) == 0)
-        {
-            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, m->color, m);
-        }
-        else
-        {
-            DrawText(m->text, m->x, m->y, m->fontSize, m->color);
-        }
+        calcFadeOut(m);
+        manageEffect(m);
     }
 
 }
@@ -150,4 +127,33 @@ Color processColor(char *colorText){
         return WHITE;
     }
     return GREEN;
+}
+void manageEffect(terminal_t* m){
+
+        if (strcmp("TYPE", m->effect) == 0)
+        {
+            drawTextTypeWriter(m->text, m->x, m->y, m->fontSize, m->color, m);
+        }
+        else
+        {
+            DrawText(m->text, m->x, m->y, m->fontSize, m->color);
+        }
+}
+void calcFadeOut(terminal_t* m){
+    float alpha = 1.0f;
+    if (m->elapsed < m->fadeIn)
+    {
+        alpha = m->elapsed / m->fadeIn;
+    }
+    if (m->elapsed > m->lifetime - m->fadeOut)
+    {
+        if (!m->skip)
+        {
+            alpha = 1.0f;
+        }else
+        {
+            float t = (m->lifetime - m->elapsed) / m->fadeOut;
+            alpha   = t;
+        }
+    }
 }

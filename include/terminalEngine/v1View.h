@@ -36,6 +36,10 @@ void terminalDispatcher_Update(terminalMessages_t* d, float dt);
 void dispatchTerminalMessage(terminalMessages_t* d, const char* text, int x, int y, int fontSize, int lifetime, bool skip, char* effect,char* color);
 void terminalDispatcher_Draw(terminalMessages_t* d,phrase_t *Phrases);
 Color processColor(char *colorText);
+void manageEffect(terminal_t* m);
+void calcFadeOut(terminal_t* m);
+void keepInScreen(terminalMessages_t* d, float dt,int index);
+
 
 
 
