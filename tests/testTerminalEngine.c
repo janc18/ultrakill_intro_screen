@@ -37,11 +37,12 @@ int main(int argc,char *argv[])
     SetTargetFPS(60);
     terminalMessages_t dispatcher;
     terminalDispatcher_Init(&dispatcher, PhrasesDetected);
+    ClearBackground(BLACK);
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
         float dt = GetFrameTime();
-        ClearBackground(BLACK);
         if (IsKeyPressed(KEY_LEFT))
         {
           //  scheduleFadeOutAllSkip(&dispatcher);
@@ -50,7 +51,7 @@ int main(int argc,char *argv[])
         scheduleSequentially(&dispatcher,Phrases);//if one is skip==false it keep in that loop
         //scheduleAllAtTheTime(&dispatcher, Phrases);// all skip==false stay in the screen 
         terminalDispatcher_Update(&dispatcher, dt);
-        terminalDispatcher_Draw(&dispatcher);
+        terminalDispatcher_Draw(&dispatcher,Phrases);
         EndDrawing();
     }
 
