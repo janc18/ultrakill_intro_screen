@@ -1,5 +1,5 @@
 #include "textScheduler/scheduler.h"
-
+#include <stdio.h>
 void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
 {
     int index = dispatcher->currentIndex;
@@ -15,7 +15,7 @@ void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
     if (!dispatcher->messages[0].active)
     {
         dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,
-                                Phrase[index].skip, Phrase[index].effect);
+                                Phrase[index].skip, Phrase[index].effect,Phrase->color);
     }
 }
 
@@ -28,7 +28,7 @@ void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase)
     for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
     {
         dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time, Phrase[i].skip,
-                                Phrase[i].effect);
+                                Phrase[i].effect,Phrase->color);
     }
     dispatcher->allDispatched = true;
 }
@@ -42,6 +42,21 @@ void scheduleFadeOutAllSkip(terminalMessages_t* dispatcher)
         {
             message->elapsed = message->lifetime - message->fadeOut;
             message->skip    = true;
+        }
+    }
+}
+
+void DrawPhrases(terminalMessages_t* d, phrase_t* Phrase)
+{
+    for (int i = 0; i < d->currentIndex; i++)
+    {
+        int indexDisplacement=i-1;
+        if (Phrase[indexDisplacement].stayInScreen && d->drew[indexDisplacement])
+        {
+            printf("%s,%d,%d,%d\n",Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont);
+            DrawText(Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont, processColor(Phrase->color));
+            printf("Dibujando %s\n", Phrase[indexDisplacement].text);
+            d->drew[indexDisplacement]=false;
         }
     }
 }
