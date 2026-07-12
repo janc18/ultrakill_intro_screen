@@ -15,6 +15,7 @@ typedef struct phrase_t
     int y;
     int sizeFont;
     char color[MAXCOLORCHARACTERS];
+    bool stayInScreen;
 }phrase_t;
 
 enum STATUS{

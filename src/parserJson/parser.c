@@ -110,6 +110,13 @@ int getPhrases(char* string, phrase_t* Phrases, int* numberOfPhrasesDetected, in
             status = ERROR;
             goto end;
         }
+        cJSON* stayInScreen = cJSON_GetObjectItemCaseSensitive(phrasesJson, "stayInScreen");
+        if (!cJSON_IsBool(stayInScreen)||stayInScreen==NULL)
+        {
+            printf("ERROR: stayInScreen\n");
+            status = ERROR;
+            goto end;
+        }
         strcpy(Phrases[iteration].text, text->valuestring);
         Phrases[iteration].skip     = skip->valueint;
         Phrases[iteration].time     = time->valuedouble;
@@ -118,6 +125,7 @@ int getPhrases(char* string, phrase_t* Phrases, int* numberOfPhrasesDetected, in
         Phrases[iteration].sizeFont = sizeFont->valueint;
         strcpy(Phrases[iteration].color, color->valuestring);
         strcpy(Phrases[iteration].effect, effect->valuestring);
+        Phrases[iteration].stayInScreen=stayInScreen->valueint;
         iteration++;
         status = OK;
     }
