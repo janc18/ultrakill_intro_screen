@@ -125,8 +125,10 @@ Color processColor(char *colorText){
         return RED;
     }else if (strcmp(colorText,"WHITE")==0){
         return WHITE;
+    }else if (strcmp(colorText,"GREEN")==0){
+        return GREEN;
     }
-    return GREEN;
+    return YELLOW;
 }
 void manageEffect(terminal_t* m){
 
