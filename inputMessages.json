@@ -7,8 +7,9 @@
             "xPos": 100,
             "yPos": 100,
             "sizeFont": 30,
-            "color": "BLUE",
-            "skip": true
+            "color": "RED",
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "MACHINE ID:",
@@ -17,8 +18,9 @@
             "xPos": 100,
             "yPos": 130,
             "sizeFont": 30,
-            "color": "BLUE",
-            "skip": true
+            "color": "WHITE",
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "LOCATION:",
@@ -28,7 +30,8 @@
             "yPos": 160,
             "sizeFont": 30,
             "color": "BLUE",
-            "skip": true
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "CURRENT OBJECTIVE:",
@@ -37,8 +40,9 @@
             "xPos": 100,
             "yPos": 190,
             "sizeFont": 30,
-            "color": "BLUE",
-            "skip": true
+            "color": "GREEN",
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "MANKIND IS DEAD.",
@@ -48,7 +52,8 @@
             "yPos": 220,
             "sizeFont": 30,
             "color": "BLUE",
-            "skip": true
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "BLOOD IS FUEL.",
@@ -57,8 +62,9 @@
             "xPos": 100,
             "yPos": 250,
             "sizeFont": 30,
-            "color": "BLUE",
-            "skip": true
+            "color": "WHITE",
+            "skip": true,
+            "stayInScreen":true
         },
         {
             "text": "HELL IS FULL",
@@ -67,8 +73,9 @@
             "xPos": 100,
             "yPos": 280,
             "sizeFont": 30,
-            "color": "BLUE",
-            "skip": true
+            "color": "GREEN",
+            "skip": true,
+            "stayInScreen":true
         }
     ]
 }
