@@ -19,10 +19,9 @@ int main(void)
     int   samples    = sampleRate * 0.0186;
     Sound keySound   = generateSimpleSound(sampleRate, samples);
     // Create StringData_t structs and configure
-
-    // Loading images to be drawing
-    Image image1 = LoadImage("../resources/images/1.png");
-    Image image2 = LoadImage("../resources/images/2.png");
+    ChangeDirectory("../");
+    Image image1 = LoadImage("./resources/images/1.png");
+    Image image2 = LoadImage("./resources/images/2.png");
     ImageResize(&image1, image1.width / 2.5, image1.height / 2.5);
     ImageResize(&image2, image2.width / 2.5, image2.height / 2.5);
     Texture2D texture1       = LoadTextureFromImage(image1);
@@ -34,29 +33,22 @@ int main(void)
     float     alpha          = 1.0f; 
     bool      fadingOut      = true;
 
-    FILE *ffmpeg = popen(
-        "ffmpeg -y -f rawvideo -pixel_format rgba "
-        "-video_size 1280x720 -framerate 60 -i - "
-        " output.mp4",
-        "w");
-
-        SetTargetFPS(60);
+    SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         UpdatePosition(&position);
         BeginDrawing();
+        DrawTexture(texture1,position.x,position.y,WHITE);
         ClearBackground(BLACK);
         EndDrawing();
-        Image img = LoadImageFromScreen();
-        fwrite(img.data, 1, screenWidth * screenHeight * 4, ffmpeg);
-        UnloadImage(img);
+
     }
         //  ---------
     UnloadImage(image1);
     UnloadImage(image2);
     UnloadSound(keySound);
     CloseAudioDevice();
-    pclose(ffmpeg);
+
     CloseWindow();
 
     return 0;
