@@ -62,7 +62,7 @@ void DrawTextV1Terminal(phrase_t *Phrase,int indexDisplacement){
         Phrase[indexDisplacement].x,
         Phrase[indexDisplacement].y,
         Phrase[indexDisplacement].sizeFont,
-        processColor(Phrase->color));
+        processColor(Phrase[indexDisplacement].color));
 }
 void DispatchTerminalMessageV1(terminalMessages_t* dispatcher,phrase_t* Phrase, int index){
             dispatchTerminalMessage(dispatcher,
@@ -73,5 +73,5 @@ void DispatchTerminalMessageV1(terminalMessages_t* dispatcher,phrase_t* Phrase, 
             Phrase[index].time,
             Phrase[index].skip,
             Phrase[index].effect,
-            Phrase->color);
+            Phrase[index].color);
 }
