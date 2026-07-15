@@ -14,8 +14,7 @@ void scheduleSequentially(terminalMessages_t* dispatcher, phrase_t* Phrase)
 
     if (!dispatcher->messages[0].active)
     {
-        dispatchTerminalMessage(dispatcher, Phrase[index].text, Phrase[index].x, Phrase[index].y, Phrase[index].sizeFont, Phrase[index].time,
-                                Phrase[index].skip, Phrase[index].effect,Phrase->color);
+    DispatchTerminalMessageV1(dispatcher,Phrase,index);
     }
 }
 
@@ -27,8 +26,7 @@ void scheduleAllAtTheTime(terminalMessages_t* dispatcher, phrase_t* Phrase)
     }
     for (int i = 0; i < dispatcher->PhrasesToDraw; i++)
     {
-        dispatchTerminalMessage(dispatcher, Phrase[i].text, Phrase[i].x, Phrase[i].y, Phrase[i].sizeFont, Phrase[i].time, Phrase[i].skip,
-                                Phrase[i].effect,Phrase->color);
+    DispatchTerminalMessageV1(dispatcher,Phrase,i);
     }
     dispatcher->allDispatched = true;
 }
@@ -53,9 +51,27 @@ void DrawPhrases(terminalMessages_t* d, phrase_t* Phrase)
         int indexDisplacement=i-1;
         if (Phrase[indexDisplacement].stayInScreen && d->drew[indexDisplacement])
         {
-            printf("%s,%d,%d,%d\n",Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont);
-            DrawText(Phrase[indexDisplacement].text, Phrase[indexDisplacement].x, Phrase[indexDisplacement].y, Phrase[indexDisplacement].sizeFont, processColor(Phrase->color));
+            DrawTextV1Terminal(Phrase,indexDisplacement);
             d->drew[indexDisplacement]=false;
         }
     }
+}
+
+void DrawTextV1Terminal(phrase_t *Phrase,int indexDisplacement){
+    DrawText(Phrase[indexDisplacement].text,
+        Phrase[indexDisplacement].x,
+        Phrase[indexDisplacement].y,
+        Phrase[indexDisplacement].sizeFont,
+        processColor(Phrase->color));
+}
+void DispatchTerminalMessageV1(terminalMessages_t* dispatcher,phrase_t* Phrase, int index){
+            dispatchTerminalMessage(dispatcher,
+            Phrase[index].text,
+            Phrase[index].x,
+            Phrase[index].y,
+            Phrase[index].sizeFont,
+            Phrase[index].time,
+            Phrase[index].skip,
+            Phrase[index].effect,
+            Phrase->color);
 }
